@@ -66,7 +66,7 @@ f.write("Archive\n---\n\n")
 $posts.each do |post|
 	url = post[:path].slice(PUBLISH_DIR.length..-1)
 	url.gsub!(/^\/+/, '') # remove preceding /
-	f.write("[#{url}](#{url}), at #{post[:timestamp]}\n\n")
+	f.write("* [#{url}](#{url}), at #{post[:timestamp]}\n")
 end
 f.close()
 renderPost(f.path, "#{PUBLISH_DIR}/browse.htm") # .htm file won't conflict
