@@ -9,6 +9,7 @@ require './config'
 require 'find'
 require 'haml'
 require 'bluecloth'
+require 'fileutils'
 
 #for archive listing
 $posts = []
@@ -41,7 +42,13 @@ def renderPost(srcFile, destFile)
 	$posts.push({:path => destFile, :timestamp => timestamp})
 end
 
-# generate the posts
+# 1. copy static files
+FileUtils.mkdir_p "#{PUBLISH_DIR}/static/"
+
+FileUtils.cp_r "#{STATIC_DIR}/css", "#{PUBLISH_DIR}/static"
+FileUtils.cp_r "#{STATIC_DIR}/images", "#{PUBLISH_DIR}/static"
+
+# 2. generate the posts
 Find.find(CONTENT_DIR) do |path|
 	next if not(FileTest.file?(path) and (path =~ /\.md$/))
 
@@ -51,7 +58,7 @@ Find.find(CONTENT_DIR) do |path|
 	renderPost(srcFile, destFile)
 end
 
-# generate the archive
+# 3. generate the archive
 $posts.sort! { |x, y| y[:timestamp] <=> x[:timestamp] } # latest post first
 
 f = File.open("#{CONTENT_DIR}/browse.tmp", 'w')
@@ -64,5 +71,8 @@ end
 f.close()
 renderPost(f.path, "#{PUBLISH_DIR}/browse.htm") # .htm file won't conflict
 
-# copy static files
+# 4. setup index page
+latest_post_path = nil # latest post is frontpage
+latest_post_path = $posts[0][:path] if $posts.length > 0
+FileUtils.cp latest_post_path, "#{PUBLISH_DIR}/index.htm" if latest_post_path
 
