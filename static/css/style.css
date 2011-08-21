@@ -1,6 +1,6 @@
 /* yup, markdown.css */
 body{
-    background: #F4F5FC url(bg.png) top left; /* yo, Fred Wilson */
+    background: #F4F5FC url(../images/bg.png) top left; /* yo, Fred Wilson */
     margin: 0 auto;
     font-family: Georgia, Palatino, serif;
     color: #444444;
