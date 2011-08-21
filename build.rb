@@ -18,7 +18,7 @@ $haml_engine = Haml::Engine.new(File.read("#{STATIC_DIR}/views/layout.haml"))
 def generateTimestamp(path)
 	f_ctime = File.stat(path).ctime.utc
 	f_ctime += 19800 # +05:30 for IST
-	f_ctime.strftime("last modified on %d %b %Y, %I:%M %p")
+	f_ctime.strftime("%d %b %Y, %I:%M %p")
 end
 
 def renderPost(srcFile, destFile)
@@ -30,7 +30,7 @@ def renderPost(srcFile, destFile)
 	timestamp = generateTimestamp(srcFile)
 
 	# render
-	locals = {:content => html, :timestamp => timestamp}
+	locals = {:content => html, :timestamp => "last modified on #{timestamp}"}
 	txt = $haml_engine.render(Object.new, locals)
 
 	# and write it to the destination
@@ -66,7 +66,7 @@ f.write("Archive\n---\n\n")
 $posts.each do |post|
 	url = post[:path].slice(PUBLISH_DIR.length..-1)
 	url.gsub!(/^\/+/, '') # remove preceding /
-	f.write("[#{url}](#{url}), #{post[:timestamp]}\n")
+	f.write("[#{url}](#{url}), at #{post[:timestamp]}\n\n")
 end
 f.close()
 renderPost(f.path, "#{PUBLISH_DIR}/browse.htm") # .htm file won't conflict
